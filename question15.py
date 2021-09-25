@@ -1,23 +1,23 @@
 import re
-p= input("Input your password")
-x = True
-while x:  
-    if (len(p)<6 or len(p)>12):
+password = input("Please enter your password: ")
+loop = True
+while loop:
+    if (len(password) < 6 or len(password) > 12):
         break
-    elif not re.search("[a-z]",p):
+    elif not re.search("[a-z]", password):
         break
-    elif not re.search("[0-9]",p):
+    elif not re.search("[0-9]", password):
         break
-    elif not re.search("[A-Z]",p):
+    elif not re.search("[A-Z]", password):
         break
-    elif not re.search("[$#@]",p):
+    elif not re.search("[$#@]", password):
         break
-    elif re.search("\s",p):
+    elif re.search("\s", password):
         break
     else:
         print("Valid Password")
-        x=False
+        loop = False
         break
 
-if x:
+if loop:
     print("Not a Valid Password")
