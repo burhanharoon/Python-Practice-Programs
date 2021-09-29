@@ -86,3 +86,4 @@ Note : User is prompted to enter a guess. If the user guesses wrong then the pro
 	 - Minimum length 6 characters.
 	 - Maximum length 16 characters.
 	```
+ - Build a stack in Python using class. It should have all the basic features of a stack such as push, pop etc.
