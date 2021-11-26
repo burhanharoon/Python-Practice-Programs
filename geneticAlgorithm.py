@@ -68,65 +68,97 @@ def newChromosomes(population, rouletteMap, totalRatio):
 
 
 def crossover(population):
-    temp1 = ''
-    temp2 = ''
-    for i in range(3):
+    crossoverParents = []
+    for i in range(0, 6, 2):
         index = random.randint(0, 9)  # index
-        print("Index", index)
-        # for j in range(temp, 10):
-        #     temp1 = temp1+population[i]
-        # for j in range(temp, 10):
-        #     temp2 = temp2+population[i+1]
-        unchange = population[i][0:index]
+        # print("Index {} ".format(index))
+        # # temp1 contains the string to be interchanged with 2nd pair
+        # temp1 = population[i][index:len(population[i])]
+        # # temp2 contains the string to be interchanged with 1st pair
+        # temp2 = population[i+1][index:len(population[i+1])]
+        # result = population[i][:index]+temp2
+        # crossoverParents.append(result)
+        # result = population[i+1][:index]+temp1
+        # crossoverParents.append(result)
+
+        unchange1 = population[i][:index]
+        unchange2 = population[i+1][:index]
+        # print("Unchange1 {} Unchange2 {}".format(unchange1, unchange2))
         temp1 = population[i][index:len(population[i])]
-        result = unchange+temp1
-        print(temp1)
-        # for j in range(temp, 10):
-        #     k = 0
-        #     p = population[i]
-        #     p[j] = temp2[k]
-        #     k = k+1
-        # for j in range(temp, 10):
-        #     k = 0
-        #     population[i+1][j] = temp1[k]
-        #     k = k+1
+        temp2 = population[i+1][index:len(population[i+1])]
+        result = unchange1+temp2
+        crossoverParents.append(result)
+        result = ''
+        result = unchange2+temp1
+        crossoverParents.append(result)
+
+    return crossoverParents
+
+
+def mutation(population):
+    newPopulation = []
+    for i in range(len(population)):
+        index = random.randint(0, 9)  # index
+        value = str(random.randint(0, 1))  # value
+        temp = population[i][:index]+value+population[i][index+1:]
+        # print("Index {} Value {} Mutation {}".format(index, value, temp))
+        newPopulation.append(temp)
+        temp = ''
+    return newPopulation
 
 
 initialPopulation = generatePopulation()  # initial population
-temp = 0
-fitnesses = []  # (array) fitness of each chromomsome
+
+
 totalFitness = 0  # fitness of population
-ratioList = []
-totalRatio = 0
-rouletteMap = []
-parents = []
-crossoverParents = []
 
-# Calculating fitness of each chromosome
-for x in range(6):
-    temp = fitnessOfChromosome(initialPopulation[x])
-    fitnesses.append(temp)
-    temp = 0
-# Calculating total Fitness
-totalFitness = calTotalFitness(fitnesses)
 
-# Calculating fitnessRatio
-for i in range(len(fitnesses)):
-    ratioList.append(fitnessRatio(fitnesses[i], totalFitness))
+tries = 0
 
-# Calculating total Ratio
-for i in range(len(ratioList)):
-    totalRatio = totalRatio+ratioList[i]
+while totalFitness <= 20:
 
-# Calculating Roulette Chart
-rouletteMap = rouletteChart(initialPopulation, ratioList)
+    fitnesses = []  # (array) fitness of each chromomsome
+    ratioList = []
+    totalRatio = 0
+    rouletteMap = []
+    parents = []  # pair of parents after roulette mapping
+    crossoverParents = []
+    mutationParents = []
 
-# Generatign Pairs
-parents = newChromosomes(initialPopulation, rouletteMap, totalRatio)
+    # Calculating fitness of each chromosome
+    for i in range(len(initialPopulation)):
+        temp = fitnessOfChromosome(initialPopulation[i])
+        fitnesses.append(temp)
+        temp = 0
 
-# # Crossover aing parents
-crossover(parents)
+    # Calculating total Fitness
+    totalFitness = calTotalFitness(fitnesses)
 
+    # Calculating fitnessRatio
+    for i in range(len(fitnesses)):
+        ratioList.append(fitnessRatio(fitnesses[i], totalFitness))
+
+    # Calculating total Ratio
+    for i in range(len(ratioList)):
+        totalRatio = totalRatio+ratioList[i]
+
+    # Calculating Roulette Chart
+    rouletteMap = rouletteChart(initialPopulation, ratioList)
+
+    # Generatign Pairs
+    parents = newChromosomes(initialPopulation, rouletteMap, totalRatio)
+
+    # Generating new parents after crossover
+    crossoverParents = crossover(parents)
+
+    mutationParents = mutation(crossoverParents)
+
+    initialPopulation = []
+    initialPopulation = mutationParents
+
+    tries = tries+1
+
+print("No of tries", tries)
 print("Population", initialPopulation)
 print("Fitness of each chromosome", fitnesses)
 print("Total Fitness", totalFitness)
@@ -135,3 +167,4 @@ print("Total Ratio", totalRatio)
 print("Roulette Map", rouletteMap)
 print("New Parents", parents)
 print('Crossover Parents', crossoverParents)
+print('Mutation Parents', mutationParents)
